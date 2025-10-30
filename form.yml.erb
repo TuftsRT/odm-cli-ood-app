@@ -1,0 +1,858 @@
+---
+cluster: "pax"
+
+form:
+  - "num_hours"
+  - "num_cores"
+  - "memory_ram"
+  - "working_dir"
+  - "send_email"
+  - "alt_email"
+  - "advanced_options"
+  - "end_with"
+  - "rerun"
+  - "rerun_all"
+  - "rerun_from"
+  - "min_num_features"
+  - "feature_type"
+  - "feature_quality"
+  - "matcher_type"
+  - "matcher_neighbors"
+  - "matcher_order"
+  - "use_fixed_camera_params"
+  - "cameras"
+  - "camera_lens"
+  - "radiometric_calibration"
+  - "use_hybrid_bundle_adjustment"
+  - "sfm_algorithm"
+  - "sfm_no_partial"
+  - "sky_removal"
+  - "bg_removal"
+  - "use_three_d_mesh"
+  - "skip_three_d_model"
+  - "skip_report"
+  - "skip_orthophoto"
+  - "ignore_gsd"
+  - "mesh_size"
+  - "mesh_octree_depth"
+  - "fast_orthophoto"
+  - "crop"
+  - "boundary"
+  - "auto_boundary"
+  - "auto_boundary_distance"
+  - "pc_quality"
+  - "pc_classify"
+  - "pc_csv"
+  - "pc_las"
+  - "pc_ept"
+  - "pc_copc"
+  - "pc_filter"
+  - "pc_sample"
+  - "pc_skip_geometric"
+  - "smrf_scalar"
+  - "smrf_slope"
+  - "smrf_threshold"
+  - "smrf_window"
+  - "texturing_skip_global_seam_leveling"
+  - "texturing_keep_unseen_faces"
+  - "texturing_single_material"
+  - "gltf"
+  - "gcp"
+  - "geo"
+  - "align"
+  - "use_exif"
+  - "dtm"
+  - "dsm"
+  - "dem_gapfill_steps"
+  - "dem_resolution"
+  - "dem_decimation"
+  - "dem_euclidean_map"
+  - "orthophoto_resolution"
+  - "orthophoto_no_tiled"
+  - "orthophoto_png"
+  - "orthophoto_kmz"
+  - "orthophoto_compression"
+  - "orthophoto_cutline"
+  - "tiles"
+  - "three_d_tiles"
+  - "rolling_shutter"
+  - "rolling_shutter_readout"
+  - "build_overviews"
+  - "cog"
+  - "copy_to"
+  - "video_limit"
+  - "video_resolution"
+  - "split"
+  - "split_overlap"
+  - "split_image_groups"
+  - "sm_no_align"
+  - "merge"
+  - "force_gps"
+  - "gps_accuracy"
+  - "optimize_disk_space"
+  - "pc_rectify"
+  - "primary_band"
+  - "skip_band_alignment"
+
+attributes:
+
+  num_hours:
+    widget: "number_field"
+    label: "Number of Hours"
+    required: true
+    help: "Upper limit for the job runtime in hours. Jobs exceeding this limit will be terminated. Higher values might increase wait times before the job starts. Maximum allowed runtime is 48 hours."
+    value: 1
+    min: 1
+    max: 48
+    step: 1
+
+  num_cores:
+    widget: "select"
+    label: "Number of CPU Cores"
+    required: true
+    help: "Number of CPU cores to use for processing. Increasing the number of cores reduces processing time but might result in a longer wait time before the job starts. It is best to use a number of cores that evenly divides the number of images to process."
+    value: "4"
+    options:
+      - "4"
+      - "8"
+      - "12"
+      - "16"
+      - "24"
+      - "32"
+
+  memory_ram:
+    widget: "select"
+    label: "Amount of Memory (RAM)"
+    required: true
+    help: "Amount of memory (RAM) to allocate for the job. Depends on the number of images. See [ODM documentation](https://docs.opendronemap.org/installation/#hardware-recommendations) for estimation guidelines. Add one GB of RAM for each requested CPU core. Not requesting enough memory might cause the job to fail. Higher values might increase wait times before the job starts. Peak RAM requirement for large datasets can be decreased by reducing the value of the *Split Images Per Submodel* parameter."
+    value: "4g"
+    options:
+      - ["4 GB", "4g"]
+      - ["8 GB", "8g"]
+      - ["12 GB", "12g"]
+      - ["16 GB", "16g"]
+      - ["24 GB", "24g"]
+      - ["32 GB", "32g"]
+      - ["48 GB", "48g"]
+      - ["64 GB", "64g"]
+      - ["96 GB", "96g"]
+      - ["128 GB", "128g"]
+      - ["192 GB", "192g"]
+      - ["256 GB", "256g"]
+
+  working_dir:
+    widget: "text_field"
+    label: "Working Directory"
+    required: true
+    help: "Absolute path of the working directory. The directory must contain an `images` folder with images to process. Examples: `/cluster/home/<user-name>/[.../]<working-dir>` `/cluster/tufts/<lab-name>/[.../]<working-dir>`"
+    pattern: "^\\/([A-Za-z0-9_\\-\\.]+\\/)*[A-Za-z0-9_\\-\\.]+$"
+
+  send_email:
+    widget: "check_box"
+    label: "Send Email Notifications"
+    help: "Send email notifications when the job starts and completes."
+    html_options:
+      data:
+        "hide-alt-email-when-unchecked": "true"
+
+  alt_email:
+    widget: "text_field"
+    label: "Alternate Notification Email"
+    help: "Email notifications sent to `<user-name>@tufts.edu` if left blank."
+    pattern: "^[a-zA-Z0-9\\._%\\+\\-]+@[a-zA-Z0-9\\.\\-]+\\.[a-zA-Z]{2,}$"
+
+  advanced_options:
+    widget: "check_box"
+    label: "Show Advanced Options"
+    help: "Display advanced processing options. Default settings will be used for all advanced parameters if none manually specified."
+    html_options:
+      data:
+        "hide-end-with-when-un-checked": "true"
+        "hide-rerun-when-un-checked": "true"
+        "hide-rerun-all-when-un-checked": "true"
+        "hide-rerun-from-when-un-checked": "true"
+        "hide-min-num-features-when-un-checked": "true"
+        "hide-feature-type-when-un-checked": "true"
+        "hide-feature-quality-when-un-checked": "true"
+        "hide-matcher-type-when-un-checked": "true"
+        "hide-matcher-neighbors-when-un-checked": "true"
+        "hide-matcher-order-when-un-checked": "true"
+        "hide-use-fixed-camera-params-when-un-checked": "true"
+        "hide-cameras-when-un-checked": "true"
+        "hide-camera-lens-when-un-checked": "true"
+        "hide-radiometric-calibration-when-un-checked": "true"
+        "hide-use-hybrid-bundle-adjustment-when-un-checked": "true"
+        "hide-sfm-algorithm-when-un-checked": "true"
+        "hide-sfm-no-partial-when-un-checked": "true"
+        "hide-sky-removal-when-un-checked": "true"
+        "hide-bg-removal-when-un-checked": "true"
+        "hide-use-three-d-mesh-when-un-checked": "true"
+        "hide-skip-three-d-model-when-un-checked": "true"
+        "hide-skip-report-when-un-checked": "true"
+        "hide-skip-orthophoto-when-un-checked": "true"
+        "hide-ignore-gsd-when-un-checked": "true"
+        "hide-mesh-size-when-un-checked": "true"
+        "hide-mesh-octree-depth-when-un-checked": "true"
+        "hide-fast-orthophoto-when-un-checked": "true"
+        "hide-crop-when-un-checked": "true"
+        "hide-boundary-when-un-checked": "true"
+        "hide-auto-boundary-when-un-checked": "true"
+        "hide-auto-boundary-distance-when-un-checked": "true"
+        "hide-pc-quality-when-un-checked": "true"
+        "hide-pc-classify-when-un-checked": "true"
+        "hide-pc-csv-when-un-checked": "true"
+        "hide-pc-las-when-un-checked": "true"
+        "hide-pc-ept-when-un-checked": "true"
+        "hide-pc-copc-when-un-checked": "true"
+        "hide-pc-filter-when-un-checked": "true"
+        "hide-pc-sample-when-un-checked": "true"
+        "hide-pc-skip-geometric-when-un-checked": "true"
+        "hide-smrf-scalar-when-un-checked": "true"
+        "hide-smrf-slope-when-un-checked": "true"
+        "hide-smrf-threshold-when-un-checked": "true"
+        "hide-smrf-window-when-un-checked": "true"
+        "hide-texturing-skip-global-seam-leveling-when-un-checked": "true"
+        "hide-texturing-keep-unseen-faces-when-un-checked": "true"
+        "hide-texturing-single-material-when-un-checked": "true"
+        "hide-gltf-when-un-checked": "true"
+        "hide-gcp-when-un-checked": "true"
+        "hide-geo-when-un-checked": "true"
+        "hide-align-when-un-checked": "true"
+        "hide-use-exif-when-un-checked": "true"
+        "hide-dtm-when-un-checked": "true"
+        "hide-dsm-when-un-checked": "true"
+        "hide-dem-gapfill-steps-when-un-checked": "true"
+        "hide-dem-resolution-when-un-checked": "true"
+        "hide-dem-decimation-when-un-checked": "true"
+        "hide-dem-euclidean-map-when-un-checked": "true"
+        "hide-orthophoto-resolution-when-un-checked": "true"
+        "hide-orthophoto-no-tiled-when-un-checked": "true"
+        "hide-orthophoto-png-when-un-checked": "true"
+        "hide-orthophoto-kmz-when-un-checked": "true"
+        "hide-orthophoto-compression-when-un-checked": "true"
+        "hide-orthophoto-cutline-when-un-checked": "true"
+        "hide-tiles-when-un-checked": "true"
+        "hide-three-d-tiles-when-un-checked": "true"
+        "hide-rolling-shutter-when-un-checked": "true"
+        "hide-rolling-shutter-readout-when-un-checked": "true"
+        "hide-build-overviews-when-un-checked": "true"
+        "hide-cog-when-un-checked": "true"
+        "hide-copy-to-when-un-checked": "true"
+        "hide-video-limit-when-un-checked": "true"
+        "hide-video-resolution-when-un-checked": "true"
+        "hide-split-when-un-checked": "true"
+        "hide-split-overlap-when-un-checked": "true"
+        "hide-split-image-groups-when-un-checked": "true"
+        "hide-sm-no-align-when-un-checked": "true"
+        "hide-merge-when-un-checked": "true"
+        "hide-force-gps-when-un-checked": "true"
+        "hide-gps-accuracy-when-un-checked": "true"
+        "hide-optimize-disk-space-when-un-checked": "true"
+        "hide-pc-rectify-when-un-checked": "true"
+        "hide-primary-band-when-un-checked": "true"
+        "hide-skip-band-alignment-when-un-checked": "true"
+
+
+  end_with:
+    widget: "select"
+    label: "End With Stage"
+    required: true
+    help: "End processing at this stage."
+    value: "odm_postprocess"
+    options:
+      - "dataset"
+      - "split"
+      - "merge"
+      - "opensfm"
+      - "odm_filterpoints"
+      - "odm_meshing"
+      - "mvs_texturing"
+      - "odm_georeferencing"
+      - "odm_dem"
+      - "odm_orthophoto"
+      - "odm_report"
+      - "odm_postprocess"
+
+  rerun:
+    widget: "select"
+    label: "Rerun Stage"
+    help: "Rerun this stage only and stop."
+    value: ""
+    options:
+      - ""
+      - "dataset"
+      - "split"
+      - "merge"
+      - "opensfm"
+      - "odm_filterpoints"
+      - "odm_meshing"
+      - "mvs_texturing"
+      - "odm_georeferencing"
+      - "odm_dem"
+      - "odm_orthophoto"
+      - "odm_report"
+      - "odm_postprocess"
+
+  rerun_all:
+    widget: "check_box"
+    label: "Rerun All"
+    help: "Permanently delete all previous results and rerun the processing pipeline."
+
+  rerun_from:
+    widget: "select"
+    label: "Rerun From"
+    help: "Rerun processing from this stage."
+    value: ""
+    options:
+      - ""
+      - "dataset"
+      - "split"
+      - "merge"
+      - "opensfm"
+      - "odm_filterpoints"
+      - "odm_meshing"
+      - "mvs_texturing"
+      - "odm_georeferencing"
+      - "odm_dem"
+      - "odm_orthophoto"
+      - "odm_report"
+      - "odm_postprocess"
+
+  min_num_features:
+    widget: "number_field"
+    label: "Minimum Number of Features"
+    help: "Minimum number of features to extract per image. More features can be useful for finding more matches between images, potentially allowing the reconstruction of areas with little overlap or insufficient features. More features also slow down processing."
+    value: 10000
+    min: 100
+    step: 1
+
+  feature_type:
+    widget: "select"
+    label: "Feature Type"
+    help: "Choose the algorithm for extracting keypoints and computing descriptors."
+    value: "dspsift"
+    options:
+      - "akaze"
+      - "dspsift"
+      - "hahog"
+      - "orb"
+      - "sift"
+
+  feature_quality:
+    widget: "select"
+    label: "Feature Quality"
+    help: "Set feature extraction quality. Higher quality generates better features, but requires more memory and takes longer."
+    value: "high"
+    options:
+      - "ultra"
+      - "high"
+      - "medium"
+      - "low"
+      - "lowest"
+
+  matcher_type:
+    widget: "select"
+    label: "Matcher Type"
+    help: "Matcher algorithm, Fast Library for Approximate Nearest Neighbors (FLANN) or Bag of Words (BOW). Using `flann` is slower, but more stable. Using `bow` is faster, but can sometimes miss valid matches. Using `bruteforce` is very slow but robust."
+    value: "flann"
+    options:
+      - "bow"
+      - "bruteforce"
+      - "flann"
+
+  matcher_neighbors:
+    widget: "number_field"
+    label: "Matcher Neighbors"
+    help: "Perform image matching with the nearest images based on GPS exif data. Set to `0` to match by triangulation."
+    value: 0
+    min: 0
+    step: 1
+
+  matcher_order:
+    widget: "number_field"
+    label: "Matcher Order"
+    help: "Perform image matching with the nearest `N` images based on image filename order. Can speed up processing of sequential images, such as those extracted from video. It is applied only on non-georeferenced datasets. Set to `0` to disable."
+    value: 0
+    min: 0
+    step: 1
+
+  use_fixed_camera_params:
+    widget: "check_box"
+    label: "Use Fixed Camera Params"
+    help: "Turn off camera parameter optimization during bundle adjustment. This can be sometimes useful for improving results that exhibit doming/bowling or when images are taken with a rolling shutter camera."
+
+  cameras:
+    widget: "text_area"
+    label: "Cameras"
+    help: "Use the camera parameters computed from another dataset instead of calculating them. Can be specified either as path to a `cameras.json` file or as a JSON string representing the contents of a `cameras.json` file."
+
+  camera_lens:
+    widget: "select"
+    label: "Camera Lens"
+    help: "Set a camera projection type. Manually setting a value can help improve geometric undistortion. By default the application tries to determine a lens type from the images metadata."
+    value: "auto"
+    options:
+      - "auto"
+      - "perspective"
+      - "brown"
+      - "fisheye"
+      - "fisheye_opencv"
+      - "spherical"
+      - "equirectangular"
+      - "dual"
+
+  radiometric_calibration:
+    widget: "select"
+    label: "Radiometric Calibration"
+    help: "Set the radiometric calibration to perform on images. When processing multispectral and thermal images you should set this option to obtain reflectance/temperature values (otherwise you will get digital number values). Option `camera` applies black level, vignetting, row gradient gain/exposure compensation (if appropriate EXIF tags are found) and computes absolute temperature values. Option `camera+sun` is experimental, applies all the corrections of `camera`, plus compensates for spectral radiance registered via a downwelling light sensor (DLS) taking in consideration the angle of the sun."
+    value: "none"
+    options:
+      - "none"
+      - "camera"
+      - "camera+sun"
+
+  use_hybrid_bundle_adjustment:
+    widget: "check_box"
+    label: "Use Hybrid Bundle Adjustment"
+    help: "Run local bundle adjustment for every image added to the reconstruction and a global adjustment every 100 images. Speeds up reconstruction for very large datasets."
+
+  sfm_algorithm:
+    widget: "select"
+    label: "SfM Algorithm"
+    help: "Choose the structure from motion algorithm. For aerial datasets, if camera GPS positions and angles are available, triangulation can generate better results. For planar scenes captured at fixed altitude with nadir-only images, planar can be much faster."
+    value: "incremental"
+    options:
+      - "incremental"
+      - "triangulation"
+      - "planar"
+
+  sfm_no_partial:
+    widget: "check_box"
+    label: "No Partial SfM"
+    help: "Do not attempt to merge partial reconstructions. This can happen when images do not have sufficient overlap or are isolated."
+
+  sky_removal:
+    widget: "check_box"
+    label: "Sky Removal"
+    help: "Automatically compute image masks using AI to remove the sky. Experimental."
+
+  bg_removal:
+    widget: "check_box"
+    label: "Background Removal"
+    help: "Automatically compute image masks using AI to remove the background. Experimental."
+
+  use_three_d_mesh:
+    widget: "check_box"
+    label: "Use 3D Mesh"
+    help: "Use a full 3D mesh to compute the orthophoto instead of a 2.5D mesh. This option is a bit faster and provides similar results in planar areas."
+
+  skip_three_d_model:
+    widget: "check_box"
+    label: "Skip 3D Model"
+    help: "Skip generation of a full 3D model. This can save time if you only need 2D results such as orthophotos and DEMs."
+
+  skip_report:
+    widget: "check_box"
+    label: "Skip Report"
+    help: "Skip generation of PDF report. This can save time if you don't need a report."
+
+  skip_orthophoto:
+    widget: "check_box"
+    label: "Skip Orthophoto"
+    help: "Skip generation of the orthophoto. This can save time if you only need 3D results or DEMs."
+
+  ignore_gsd:
+    widget: "check_box"
+    label: "Ignore GSD"
+    help: "Ignore Ground Sampling Distance (GSD). Ordinarily, GSD estimates are used to cap the maximum resolution of image outputs and resizes images when necessary, resulting in faster processing and lower memory usage. Since GSD is an estimate, sometimes ignoring it can result in slightly better image output quality. Do not use unless you are positive you need it."
+
+  mesh_size:
+    widget: "number_field"
+    label: "Mesh Size"
+    help: "The maximum vertex count of the output mesh."
+    value: 200000
+    min: 1000
+    step: 1
+
+  mesh_octree_depth:
+    widget: "number_field"
+    label: "Mesh Octree Depth"
+    help: "Octree depth used in the mesh reconstruction, increase to get more vertices. Recommended values are between `8` and `12`. Must be at least `1` and at most `14`."
+    value: 11
+    min: 1
+    max: 14
+    step: 1
+
+  fast_orthophoto:
+    widget: "check_box"
+    label: "Fast Orthophoto"
+    help: "Skips dense reconstruction and 3D model generation. It generates an orthophoto directly from the sparse reconstruction. If you just need an orthophoto and do not need a full 3D model, turn on this option."
+
+  crop:
+    widget: "number_field"
+    label: "Crop"
+    help: "Automatically crop image outputs by creating a smooth buffer around the dataset boundaries, shrunk by `N` meters. Use `0` to disable cropping."
+    value: 3.00
+    min: 0.00
+    step: 0.01
+
+  boundary:
+    widget: "text_area"
+    label: "Boundary"
+    help: "GeoJSON polygon limiting the area of the reconstruction. Can be specified either as path to a GeoJSON file or as a JSON string representing the contents of a GeoJSON file."
+
+  auto_boundary:
+    widget: "check_box"
+    label: "Auto Boundary"
+    help: "Automatically set a boundary using camera shot locations to limit the area of the reconstruction. This can help remove far away background artifacts (sky, background landscapes, etc)."
+
+  auto_boundary_distance:
+    widget: "number_field"
+    label: "Auto Boundary Distance"
+    help: "Specify the distance between camera shot locations and the outer edge of the boundary when computing the boundary with auto-boundary. Set to `0` to automatically choose a value."
+    value: 0.00
+    min: 0.00
+    step: 0.01
+
+  pc_quality:
+    widget: "select"
+    label: "Point Cloud Quality"
+    help: "Set point cloud quality. Higher quality generates better, denser point clouds, but requires more memory and takes longer. Each step up in quality increases processing time roughly by a factor of four."
+    value: "medium"
+    options:
+      - "ultra"
+      - "high"
+      - "medium"
+      - "low"
+      - "lowest"
+
+  pc_classify:
+    widget: "check_box"
+    label: "Classify Point Cloud"
+    help: "Classify the point cloud outputs. You can control the behavior of this option by tweaking the DEM parameters."
+
+  pc_csv:
+    widget: "check_box"
+    label: "Export Point Cloud CSV"
+    help: "Export the georeferenced point cloud in CSV format."
+
+  pc_las:
+    widget: "check_box"
+    label: "Export Point Cloud LAS"
+    help: "Export the georeferenced point cloud in LAS format."
+
+  pc_ept:
+    widget: "check_box"
+    label: "Export Point Cloud EPT"
+    help: "Export the georeferenced point cloud in Entwine Point Tile (EPT) format."
+
+  pc_copc:
+    widget: "check_box"
+    label: "Export Point Cloud COPC"
+    help: "Export the georeferenced point cloud in Cloud Optimized Point Cloud (COPC) format."
+
+  pc_filter:
+    widget: "number_field"
+    label: "Point Cloud Filter"
+    help: "Filters the point cloud by removing points that deviate more than `N` standard deviations from the local mean. Set to `0` to disable filtering."
+    value: 5.00
+    min: 0.00
+    step: 0.01
+
+  pc_sample:
+    widget: "number_field"
+    label: "Point Cloud Sample"
+    help: "Filters the point cloud by keeping only a single point around a radius `N` (in meters). This can be useful to limit the output resolution of the point cloud and remove duplicate points. Set to `0` to disable sampling."
+    value: 0.00
+    min: 0.00
+    step: 0.01
+
+  pc_skip_geometric:
+    widget: "check_box"
+    label: "Skip Geometric Estimates"
+    help: "Geometric estimates improve the accuracy of the point cloud by computing geometrically consistent depthmaps but may not be usable in larger datasets. This flag disables geometric estimates."
+
+  smrf_scalar:
+    widget: "number_field"
+    label: "SMRF Scalar"
+    help: "Simple Morphological Filter elevation scalar parameter."
+    value: 1.25
+    min: 0.00
+    step: 0.01
+
+  smrf_slope:
+    widget: "number_field"
+    label: "SMRF Slope"
+    help: "Simple Morphological Filter slope parameter (rise over run)."
+    value: 0.15
+    min: 0.00
+    step: 0.01
+
+  smrf_threshold:
+    widget: "number_field"
+    label: "SMRF Threshold"
+    help: "Simple Morphological Filter elevation threshold parameter (meters)."
+    value: 0.50
+    min: 0.00
+    step: 0.01
+
+  smrf_window:
+    widget: "number_field"
+    label: "SMRF Window"
+    help: "Simple Morphological Filter window radius parameter (meters)."
+    value: 18.00
+    min: 0.00
+    step: 0.01
+
+  texturing_skip_global_seam_leveling:
+    widget: "check_box"
+    label: "Skip Global Seam Leveling"
+    help: "Skip normalization of colors across all images. Useful when processing radiometric data."
+
+  texturing_keep_unseen_faces:
+    widget: "check_box"
+    label: "Keep Unseen Faces"
+    help: "Keep faces in the mesh that are not seen in any camera."
+
+  texturing_single_material:
+    widget: "check_box"
+    label: "Single Material OBJ"
+    help: "Generate OBJs that have a single material and a single texture file instead of multiple ones."
+
+  gltf:
+    widget: "check_box"
+    label: "Generate glTF"
+    help: "Generate single file Binary glTF (GLB) textured models."
+
+  gcp:
+    widget: "text_field"
+    label: "GCP File"
+    popup_title: "Select GCP File"
+    help: "Path to the file containing the ground control points used for georeferencing. [File format specified in ODM documentation.](https://docs.opendronemap.org/gcp/#gcp-file-format)"
+    pattern: "^\\/?([A-Za-z0-9_\\-\\.]+\\/)*[A-Za-z0-9_\\-\\.]+$"
+
+  geo:
+    widget: "text_field"
+    label: "Geolocation File"
+    popup_title: "Select Geolocation File"
+    help: "Path to the image geolocation file containing the camera center coordinates used for georeferencing. [File format specified in ODM documentation.](https://docs.opendronemap.org/geo/#image-geolocation-files)"
+    pattern: "^\\/?([A-Za-z0-9_\\-\\.]+\\/)*[A-Za-z0-9_\\-\\.]+$"
+
+  align:
+    widget: "text_field"
+    label: "Alignment File"
+    help: "Path to a GeoTIFF DEM or a LAS/LAZ point cloud that the reconstruction outputs should be automatically aligned to. Experimental."
+    pattern: "^\\/?([A-Za-z0-9_\\-\\.]+\\/)*[A-Za-z0-9_\\-\\.]+$"
+
+  use_exif:
+    widget: "check_box"
+    label: "Use EXIF for Georeferencing"
+    help: "Select if you have a GCP File but want to use the EXIF information for georeferencing instead."
+
+  dtm:
+    widget: "check_box"
+    label: "Build DTM"
+    help: "Select to build a DTM (Digital Terrain Model, ground only) using a simple morphological filter. Check the DEM and SMRF parameters for finer tuning."
+
+  dsm:
+    widget: "check_box"
+    label: "Build DSM"
+    help: "Select to build a DSM (Digital Surface Model, ground + objects) using a progressive morphological filter. Check the DEM parameters for finer tuning."
+
+  dem_gapfill_steps:
+    widget: "number_field"
+    label: "DEM Gapfill Steps"
+    help: "Number of steps used to fill areas with gaps. Set to `0` to disable gap filling. Starting with a radius equal to the output resolution, `N` different DEMs are generated with progressively bigger radius using the inverse distance weighted (IDW) algorithm and merged together. Remaining gaps are then merged using nearest neighbor interpolation."
+    value: 3
+    min: 0
+    step: 1
+
+  dem_resolution:
+    widget: "number_field"
+    label: "DEM Resolution (cm/pixel)"
+    help: "DSM/DTM resolution in cm/pixel. Note that this value is capped by a ground sampling distance (GSD) estimate."
+    value: 5.00
+    min: 0.01
+    step: 0.01
+
+  dem_decimation:
+    widget: "number_field"
+    label: "DEM Decimation"
+    help: "Decimate the points before generating the DEM. Value `1` is no decimation (full quality). Value `100` decimates ~99% of the points. Useful for speeding up generation of DEM results in very large datasets."
+    value: 1
+    min: 1
+    max: 100
+    step: 1
+
+  dem_euclidean_map:
+    widget: "check_box"
+    label: "DEM Euclidean Map"
+    help: "Computes an euclidean raster map for each DEM. The map reports the distance from each cell to the nearest NODATA value (before any hole filling takes place). This can be useful to isolate the areas that have been filled."
+
+  orthophoto_resolution:
+    widget: "number_field"
+    label: "Orthophoto Resolution (cm/pixel)"
+    help: "Orthophoto resolution in cm/pixel. Note that this value is capped by a ground sampling distance (GSD) estimate."
+    value: 5.00
+    min: 0.01
+    step: 0.01
+
+  orthophoto_no_tiled:
+    widget: "check_box"
+    label: "Striped GeoTIFF Orthophoto"
+    help: "Select if you want a striped GeoTIFF."
+
+  orthophoto_png:
+    widget: "check_box"
+    label: "PNG Orthophoto"
+    help: "Select if you want to generate a PNG rendering of the orthophoto."
+
+  orthophoto_kmz:
+    widget: "check_box"
+    label: "KMZ Orthophoto"
+    help: "Select if you want to generate a Google Earth (KMZ) rendering of the orthophoto."
+
+  orthophoto_compression:
+    widget: "select"
+    label: "Orthophoto Compression"
+    help: "Set the compression to use for orthophotos."
+    value: "DEFLATE"
+    options:
+      - "JPEG"
+      - "LZW"
+      - "PACKBITS"
+      - "DEFLATE"
+      - "LZMA"
+      - "NONE"
+
+  orthophoto_cutline:
+    widget: "check_box"
+    label: "Orthophoto Cutline"
+    help: "Generates a polygon around the cropping area that cuts the orthophoto around the edges of features. This polygon can be useful for stitching seamless mosaics with multiple overlapping orthophotos."
+
+  tiles:
+    widget: "check_box"
+    label: "Generate Tiles"
+    help: "Generate static tiles for orthophotos and DEMs that are suitable for viewers like Leaflet or OpenLayers."
+
+  three_d_tiles:
+    widget: "check_box"
+    label: "Generate 3D Tiles"
+    help: "Generate OGC 3D Tiles outputs."
+
+  rolling_shutter:
+    widget: "check_box"
+    label: "Rolling Shutter Correction"
+    help: "Turn on rolling shutter correction. If the camera has a rolling shutter and the images were taken in motion, you can turn on this option to improve the accuracy of the results."
+
+  rolling_shutter_readout:
+    widget: "number_field"
+    label: "Rolling Shutter Readout (ms)"
+    help: "Override the rolling shutter readout time for your camera sensor (in milliseconds), instead of using the rolling shutter readout database. Note that not all cameras are present in the database. Set to `0` to use the database value."
+    value: 0
+    min: 0
+    step: 1
+
+  build_overviews:
+    widget: "check_box"
+    label: "Build Overviews"
+    help: "Build orthophoto overviews for faster display in programs such as QGIS."
+
+  cog:
+    widget: "check_box"
+    label: "Cloud-Optimized GeoTIFFs"
+    help: "Create Cloud-Optimized GeoTIFFs instead of normal GeoTIFFs."
+
+  copy_to:
+    widget: "text_field"
+    label: "Copy To Folder"
+    help: "Copy output results to this folder after processing."
+    pattern: "^\\/?([A-Za-z0-9_\\-\\.]+\\/)*[A-Za-z0-9_\\-\\.]+$"
+
+  video_limit:
+    widget: "number_field"
+    label: "Video Frame Limit"
+    help: "Maximum number of frames to extract from video files for processing. Set to `0` for no limit."
+    value: 500
+    min: 0
+    step: 1
+
+  video_resolution:
+    widget: "number_field"
+    label: "Video Output Resolution"
+    help: "The maximum output resolution of extracted video frames in pixels."
+    value: 4000
+    min: 240
+    step: 1
+
+  split:
+    widget: "number_field"
+    label: "Split Images Per Submodel"
+    help: "Average number of images per submodel. When splitting a large dataset into smaller submodels, images are grouped into clusters. This value regulates the number of images that each cluster should have on average."
+    value: 999999
+    min: 1
+    step: 1
+
+  split_overlap:
+    widget: "number_field"
+    label: "Split Overlap Radius"
+    help: "Radius of the overlap between submodels. After grouping images into clusters, images that are closer than this radius to a cluster are added to the cluster. This is done to ensure that neighboring submodels overlap."
+    value: 150
+    min: 0
+    step: 1
+
+  split_image_groups:
+    widget: "text_field"
+    label: "Split Image Groups File"
+    help: "Path to the image groups file that controls how images should be split into groups. Each line in the file should be as follows: `image_name group_name`"
+    pattern: "^\\/?([A-Za-z0-9_\\-\\.]+\\/)*[A-Za-z0-9_\\-\\.]+$"
+
+  sm_no_align:
+    widget: "check_box"
+    label: "Skip Submodel Alignment"
+    help: "Skip alignment of submodels in split-merge. Useful if GPS is good enough on very large datasets."
+
+  merge:
+    widget: "select"
+    label: "Merge Outputs"
+    help: "Choose what to merge in the merge step in a split dataset. By default all available outputs are merged."
+    value: "all"
+    options:
+      - "all"
+      - "pointcloud"
+      - "orthophoto"
+      - "dem"
+
+  force_gps:
+    widget: "check_box"
+    label: "Force GPS"
+    help: "Use images' GPS exif data for reconstruction, even if there are GCPs present. This flag is useful if you have high precision GPS measurements. If there are no GCPs, this flag does nothing."
+
+  gps_accuracy:
+    widget: "number_field"
+    label: "GPS Accuracy (meters)"
+    help: "Set a value in meters for the GPS Dilution of Precision (DOP) information for all images. If your images are tagged with high precision GPS information (RTK), this value will be automatically set accordingly. You can use this option to manually set it in case the reconstruction fails. Lowering this option can sometimes help control bowling-effects over large areas."
+    value: 3.00
+    min: 0.00
+    step: 0.01
+
+  optimize_disk_space:
+    widget: "check_box"
+    label: "Optimize Disk Space"
+    help: "Delete heavy intermediate files to optimize disk space usage. This affects the ability to restart the pipeline from an intermediate stage, but allows datasets to be processed on machines that don't have sufficient disk space available."
+
+  pc_rectify:
+    widget: "check_box"
+    label: "Rectify Point Cloud"
+    help: "Perform ground rectification on the point cloud. This means that wrongly classified ground points will be re-classified and gaps will be filled. Useful for generating DTMs."
+
+  primary_band:
+    widget: "text_field"
+    label: "Primary Band"
+    help: "When processing multispectral datasets, you can specify the name of the primary band that will be used for reconstruction. It's recommended to choose a band which has sharp details and is in focus."
+    value: "auto"
+
+  skip_band_alignment:
+    widget: "check_box"
+    label: "Skip Band Alignment"
+    help: "When processing multispectral datasets, ODM will automatically align the images for each band. If the images have been postprocessed and are already aligned, use this option."

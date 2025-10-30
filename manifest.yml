@@ -1,0 +1,4 @@
+---
+name: OpenDroneMap (ODM)
+role: batch_connect
+description: "OpenDroneMap (ODM) is an open-source toolkit for processing aerial imagery into maps and 3D models."

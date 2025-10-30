@@ -1,0 +1,91 @@
+#!/bin/bash
+
+module purge
+module load odm/3.5.6
+
+odm <%= context.working_dir %> \
+    --end-with <%= context.end_with %> \
+    <% if context.rerun != "" %>--rerun <%= context.rerun %> \<% else %>\<% end %>
+    <% if context.rerun_all == "1" %>--rerun-all \<% else %>\<% end %>
+    <% if context.rerun_from != "" %>--rerun-from <%= context.rerun_from %> \<% else %>\<% end %>
+    --min-num-features <%= context.min_num_features.to_i %> \
+    --feature-type <%= context.feature_type %> \
+    --feature-quality <%= context.feature_quality %> \
+    --matcher-type <%= context.matcher_type %> \
+    --matcher-neighbors <%= context.matcher_neighbors.to_i %> \
+    --matcher-order <%= context.matcher_order.to_i %> \
+    <% if context.use_fixed_camera_params == "1" %>--use-fixed-camera-params \<% else %>\<% end %>
+    <% if context.cameras != "" %>--cameras <%= context.cameras %> \<% else %>\<% end %>
+    --camera-lens <%= context.camera_lens %> \
+    --radiometric-calibration <%= context.radiometric_calibration %> \
+    --max-concurrency <%= context.num_cores.to_i %> \
+    <% if context.use_hybrid_bundle_adjustment == "1" %>--use-hybrid-bundle-adjustment \<% else %>\<% end %>
+    --sfm-algorithm <%= context.sfm_algorithm %> \
+    <% if context.sfm_no_partial == "1" %>--sfm-no-partial \<% else %>\<% end %>
+    <% if context.sky_removal == "1" %>--sky-removal \<% else %>\<% end %>
+    <% if context.bg_removal == "1" %>--bg-removal \<% else %>\<% end %>
+    <% if context.use_three_d_mesh == "1" %>--use-3d-mesh \<% else %>\<% end %>
+    <% if context.skip_three_d_model == "1" %>--skip-3d-model \<% else %>\<% end %>
+    <% if context.skip_report == "1" %>--skip-report \<% else %>\<% end %>
+    <% if context.skip_orthophoto == "1" %>--skip-orthophoto \<% else %>\<% end %>
+    <% if context.ignore_gsd == "1" %>--ignore-gsd \<% else %>\<% end %>
+    --no-gpu \
+    --mesh-size <%= context.mesh_size.to_i %> \
+    --mesh-octree-depth <%= context.mesh_octree_depth.to_i %> \
+    <% if context.fast_orthophoto == "1" %>--fast-orthophoto \<% else %>\<% end %>
+    --crop <%= context.crop.to_f %> \
+    <% if context.boundary != "" %>--boundary <%= context.boundary %> \<% else %>\<% end %>
+    <% if context.auto_boundary == "1" %>--auto-boundary \<% else %>\<% end %>
+    --auto-boundary-distance <%= context.auto_boundary_distance.to_f %> \
+    --pc-quality <%= context.pc_quality %> \
+    <% if context.pc_classify == "1" %>--pc-classify \<% else %>\<% end %>
+    <% if context.pc_csv == "1" %>--pc-csv \<% else %>\<% end %>
+    <% if context.pc_las == "1" %>--pc-las \<% else %>\<% end %>
+    <% if context.pc_ept == "1" %>--pc-ept\<% else %>\<% end %>
+    <% if context.pc_copc == "1" %>--pc-copc \<% else %>\<% end %>
+    --pc-filter <%= context.pc_filter.to_f %> \
+    --pc-sample <%= context.pc_sample.to_f %> \
+    <% if context.pc_skip_geometric == "1" %>--pc-skip-geometric \<% else %>\<% end %>
+    --smrf-scalar <%= context.smrf_scalar.to_f %> \
+    --smrf-slope <%= context.smrf_slope.to_f %> \
+    --smrf-threshold <%= context.smrf_threshold.to_f %> \
+    --smrf-window <%= context.smrf_window.to_f %> \
+    <% if context.texturing_skip_global_seam_leveling == "1" %>--texturing-skip-global-seam-leveling \<% else %>\<% end %>
+    <% if context.texturing_keep_unseen_faces == "1" %>--texturing-keep-unseen-faces \<% else %>\<% end %>
+    <% if context.texturing_single_material == "1" %>--texturing-single-material \<% else %>\<% end %>
+    <% if context.gltf == "1" %>--gltf \<% else %>\<% end %>
+    <% if context.gcp != "" %>--gcp <%= context.gcp %> \<% else %>\<% end %>
+    <% if context.geo != "" %>--geo <%= context.geo %> \<% else %>\<% end %>
+    <% if context.align != "" %>--align <%= context.align %> \<% else %>\<% end %>
+    <% if context.use_exif == "1" %>--use-exif \<% else %>\<% end %>
+    <% if context.dtm == "1" %>--dtm \<% else %>\<% end %>
+    <% if context.dsm == "1" %>--dsm \<% else %>\<% end %>
+    --dem-gapfill-steps <%= context.dem_gapfill_steps.to_i %> \
+    --dem-resolution <%= context.dem_resolution.to_f %> \
+    --dem-decimation <%= context.dem_decimation.to_i %> \
+    <% if context.dem_euclidean_map == "1" %>--dem-euclidean-map \<% else %>\<% end %>
+    --orthophoto-resolution <%= context.orthophoto_resolution.to_f %> \
+    <% if context.orthophoto_no_tiled == "1" %>--orthophoto-no-tiled \<% else %>\<% end %>
+    <% if context.orthophoto_kmz == "1" %>--orthophoto-kmz \<% else %>\<% end %>
+    --orthophoto-compression <%= context.orthophoto_compression %> \
+    <% if context.orthophoto_cutline == "1" %>--orthophoto-cutline \<% else %>\<% end %>
+    <% if context.tiles == "1" %>--tiles \<% else %>\<% end %>
+    <% if context.three_d_tiles == "1" %>--3d-tiles \<% else %>\<% end %>
+    <% if context.rolling_shutter == "1" %>--rolling-shutter \<% else %>\<% end %>
+    --rolling-shutter-readout <%= context.rolling_shutter_readout.to_i %> \
+    <% if context.build_overviews == "1" %>--build-overviews \<% else %>\<% end %>
+    <% if context.cog == "1" %>--cog \<% else %>\<% end %>
+    <% if context.copy_to != "" %>--copy-to <%= context.copy_to %> \<% else %>\<% end %>
+    --video-limit <%= context.video_limit.to_i %> \
+    --video-resolution <%= context.video_resolution.to_i %> \
+    --split <%= context.split.to_i %> \
+    --split-overlap <%= context.split_overlap.to_i %> \
+    <% if context.split_image_groups != "" %>--split-image-groups <%= context.split_image_groups %> \<% else %>\<% end %>
+    <% if context.sm_no_align == "1" %>--sm-no-align \<% else %>\<% end %>
+    --merge <%= context.merge %> \
+    <% if context.force_gps == "1" %>--force-gps \<% else %>\<% end %>
+    --gps-accuracy <%= context.gps_accuracy.to_f %> \
+    <% if context.optimize_disk_space == "1" %>--optimize-disk-space \<% else %>\<% end %>
+    <% if context.pc_rectify == "1" %>--pc-rectify \<% else %>\<% end %>
+    --primary-band <%= context.primary_band %> \
+    <% if context.skip_band_alignment == "1" %>--skip-band-alignment \<% else %>\<% end %>
