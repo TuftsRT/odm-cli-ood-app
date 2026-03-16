@@ -7,9 +7,10 @@ batch_connect:
 script:
   wall_time: <%= num_hours.to_i * 3600 %>
   native:
+    - "--cpus-per-task=<%= num_cores %>"
     - "--mem=<%= memory_ram %>"
     - "--nodes=1"
-    - "--ntasks=<%= num_cores %>"
+    - "--ntasks=1"
     - "--partition=batch"
 <% if send_email == "1" %>
 <% if alt_email == "" %>
